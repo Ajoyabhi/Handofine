@@ -12,6 +12,11 @@ import Collections from "@/pages/collections";
 import Collection from "@/pages/collection";
 import NewArrivals from "@/pages/new-arrivals";
 import Sale from "@/pages/sale";
+import AdminDashboard from "@/pages/admin/dashboard";
+import AdminProducts from "@/pages/admin/products";
+import AdminCollections from "@/pages/admin/collections";
+import AdminOrders from "@/pages/admin/orders";
+import AdminBanners from "@/pages/admin/banners";
 
 function Router() {
   return (
@@ -22,6 +27,11 @@ function Router() {
       <Route path="/collections/:slug" component={Collection} />
       <Route path="/new-arrivals" component={NewArrivals} />
       <Route path="/sale" component={Sale} />
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/products" component={AdminProducts} />
+      <Route path="/admin/collections" component={AdminCollections} />
+      <Route path="/admin/orders" component={AdminOrders} />
+      <Route path="/admin/banners" component={AdminBanners} />
       <Route component={NotFound} />
     </Switch>
   );
