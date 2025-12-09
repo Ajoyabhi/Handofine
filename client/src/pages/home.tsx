@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/HeroSection';
@@ -9,14 +11,47 @@ import TrustBadges from '@/components/TrustBadges';
 import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/CartDrawer';
 import QuickViewModal from '@/components/QuickViewModal';
-import { heroData, promotionalBanner, collections, products } from '@/lib/mockData';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Product, Collection, Banner } from '@shared/schema';
 
 export default function Home() {
-  const [quickViewProduct, setQuickViewProduct] = useState<typeof products[0] | null>(null);
+  const [, navigate] = useLocation();
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   
-  // todo: remove mock functionality - filter products from API
+  const { data: products = [], isLoading: productsLoading } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+  });
+
+  const { data: collections = [], isLoading: collectionsLoading } = useQuery<Collection[]>({
+    queryKey: ['/api/collections'],
+  });
+
+  const { data: banners = [] } = useQuery<Banner[]>({
+    queryKey: ['/api/banners'],
+  });
+
+  const heroBanner = banners.find(b => b.type === 'hero' && b.isActive);
+  const promotionalBannerData = banners.find(b => b.type === 'promotional' && b.isActive);
+
   const featuredProducts = products.filter(p => p.isBestSeller || p.isNew).slice(0, 4);
-  const newArrivals = products.filter(p => p.isNew);
+  const newArrivals = products.filter(p => p.isNew).slice(0, 4);
+
+  const ProductGridSkeleton = () => (
+    <section className="py-12 md:py-16 lg:py-20">
+      <div className="max-w-7xl mx-auto px-4">
+        <Skeleton className="h-10 w-48 mb-8" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="space-y-3">
+              <Skeleton className="aspect-square rounded-md" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-home">
@@ -25,38 +60,65 @@ export default function Home() {
       
       <main>
         <HeroSection
-          image={heroData.image}
-          title={heroData.title}
-          subtitle={heroData.subtitle}
-          ctaText={heroData.cta}
-          onCtaClick={() => console.log('Navigate to shop')}
+          image={heroBanner?.image || '/placeholder-hero.jpg'}
+          title={heroBanner?.title || 'Transform Your Space'}
+          subtitle={heroBanner?.subtitle || 'Discover our collection of premium scented candles and home decor'}
+          ctaText={heroBanner?.ctaText || 'Shop Now'}
+          onCtaClick={() => navigate(heroBanner?.ctaLink || '/shop')}
         />
 
-        <ProductGrid 
-          products={featuredProducts}
-          title="Featured Products"
-          showViewAll
-          onViewAll={() => console.log('Navigate to all products')}
-        />
+        {productsLoading ? (
+          <ProductGridSkeleton />
+        ) : featuredProducts.length > 0 ? (
+          <ProductGrid 
+            products={featuredProducts}
+            title="Featured Products"
+            showViewAll
+            onViewAll={() => navigate('/shop')}
+          />
+        ) : null}
 
-        <CollectionsSection collections={collections} />
+        {collectionsLoading ? (
+          <section className="py-12 md:py-16">
+            <div className="max-w-7xl mx-auto px-4">
+              <Skeleton className="h-10 w-48 mx-auto mb-8" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3].map(i => (
+                  <Skeleton key={i} className="aspect-[4/3] rounded-md" />
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : collections.length > 0 ? (
+          <CollectionsSection collections={collections.map(c => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+            image: c.image || '/placeholder-collection.jpg',
+            productCount: c.productCount || 0,
+          }))} />
+        ) : null}
 
-        <PromotionalBanner
-          image={promotionalBanner.image}
-          title={promotionalBanner.title}
-          subtitle={promotionalBanner.subtitle}
-          ctaText={promotionalBanner.cta}
-          onCtaClick={() => console.log('Navigate to sale')}
-        />
+        {promotionalBannerData && (
+          <PromotionalBanner
+            image={promotionalBannerData.image || '/placeholder-promo.jpg'}
+            title={promotionalBannerData.title}
+            subtitle={promotionalBannerData.subtitle || ''}
+            ctaText={promotionalBannerData.ctaText || 'Explore Offers'}
+            onCtaClick={() => navigate(promotionalBannerData.ctaLink || '/sale')}
+          />
+        )}
 
-        {newArrivals.length > 0 && (
+        {productsLoading ? (
+          <ProductGridSkeleton />
+        ) : newArrivals.length > 0 ? (
           <ProductGrid 
             products={newArrivals}
             title="New Arrivals"
             showViewAll
-            onViewAll={() => console.log('Navigate to new arrivals')}
+            onViewAll={() => navigate('/new-arrivals')}
           />
-        )}
+        ) : null}
 
         <TrustBadges />
       </main>

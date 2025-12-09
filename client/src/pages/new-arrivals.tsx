@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -6,15 +7,19 @@ import CartDrawer from '@/components/CartDrawer';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import { useCart } from '@/context/CartContext';
-import { products } from '@/lib/mockData';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Product } from '@shared/schema';
 
 export default function NewArrivals() {
   const { addItem } = useCart();
-  const [quickViewProduct, setQuickViewProduct] = useState<typeof products[0] | null>(null);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [sortBy, setSortBy] = useState('newest');
 
-  // todo: remove mock functionality - fetch from API
+  const { data: products = [], isLoading } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+  });
+
   const newProducts = products.filter(p => p.isNew);
 
   const sortedProducts = [...newProducts].sort((a, b) => {
@@ -60,24 +65,43 @@ export default function NewArrivals() {
           </Select>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {sortedProducts.map(product => (
-            <ProductCard
-              key={product.id}
-              {...product}
-              onAddToCart={() => addItem({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                salePrice: product.salePrice,
-                image: product.image
-              })}
-              onQuickView={() => setQuickViewProduct(product)}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="space-y-3">
+                <Skeleton className="aspect-square rounded-md" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {sortedProducts.map(product => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                salePrice={product.salePrice ?? undefined}
+                image={product.image || '/placeholder-product.jpg'}
+                isNew={product.isNew ?? false}
+                isBestSeller={product.isBestSeller ?? false}
+                inStock={product.inStock ?? true}
+                onAddToCart={() => addItem({
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  salePrice: product.salePrice ?? undefined,
+                  image: product.image || '/placeholder-product.jpg'
+                })}
+                onQuickView={() => setQuickViewProduct(product)}
+              />
+            ))}
+          </div>
+        )}
 
-        {sortedProducts.length === 0 && (
+        {!isLoading && sortedProducts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">No new arrivals at the moment. Check back soon!</p>
           </div>

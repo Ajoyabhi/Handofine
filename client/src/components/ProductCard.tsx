@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingBag, Eye } from 'lucide-react';
-import { formatPrice, getDiscountPercentage } from '@/lib/mockData';
+import { formatPrice, getDiscountPercentage } from '@/lib/utils';
 
 interface ProductCardProps {
   id: number;

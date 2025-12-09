@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, ShoppingBag } from 'lucide-react';
-import { formatPrice, getDiscountPercentage } from '@/lib/mockData';
+import { formatPrice, getDiscountPercentage } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 
 interface QuickViewModalProps {

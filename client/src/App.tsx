@@ -12,6 +12,7 @@ import Collections from "@/pages/collections";
 import Collection from "@/pages/collection";
 import NewArrivals from "@/pages/new-arrivals";
 import Sale from "@/pages/sale";
+import Checkout from "@/pages/checkout";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminProducts from "@/pages/admin/products";
 import AdminCollections from "@/pages/admin/collections";
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/collections/:slug" component={Collection} />
       <Route path="/new-arrivals" component={NewArrivals} />
       <Route path="/sale" component={Sale} />
+      <Route path="/checkout" component={Checkout} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/products" component={AdminProducts} />
       <Route path="/admin/collections" component={AdminCollections} />

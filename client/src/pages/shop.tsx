@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import TopBar from '@/components/layout/TopBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -6,7 +7,6 @@ import CartDrawer from '@/components/CartDrawer';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import { useCart } from '@/context/CartContext';
-import { products, collections } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Grid3X3, LayoutGrid, SlidersHorizontal } from 'lucide-react';
@@ -14,17 +14,26 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Product, Collection } from '@shared/schema';
 
 export default function Shop() {
   const { addItem } = useCart();
-  const [quickViewProduct, setQuickViewProduct] = useState<typeof products[0] | null>(null);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [sortBy, setSortBy] = useState('featured');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [gridCols, setGridCols] = useState<3 | 4>(4);
 
-  // todo: remove mock functionality - filter from API
+  const { data: products = [], isLoading: productsLoading } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+  });
+
+  const { data: collections = [], isLoading: collectionsLoading } = useQuery<Collection[]>({
+    queryKey: ['/api/collections'],
+  });
+
   const filteredProducts = selectedCategories.length > 0
-    ? products.filter(p => selectedCategories.includes(p.category))
+    ? products.filter(p => p.category && selectedCategories.includes(p.category))
     : products;
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -52,21 +61,29 @@ export default function Shop() {
     <div className="space-y-6">
       <div>
         <h4 className="font-medium mb-3">Categories</h4>
-        <div className="space-y-2">
-          {collections.map(collection => (
-            <div key={collection.slug} className="flex items-center gap-2">
-              <Checkbox 
-                id={collection.slug}
-                checked={selectedCategories.includes(collection.slug)}
-                onCheckedChange={() => toggleCategory(collection.slug)}
-                data-testid={`checkbox-category-${collection.slug}`}
-              />
-              <Label htmlFor={collection.slug} className="text-sm cursor-pointer">
-                {collection.name} ({products.filter(p => p.category === collection.slug).length})
-              </Label>
-            </div>
-          ))}
-        </div>
+        {collectionsLoading ? (
+          <div className="space-y-2">
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} className="h-5 w-32" />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {collections.map(collection => (
+              <div key={collection.slug} className="flex items-center gap-2">
+                <Checkbox 
+                  id={collection.slug}
+                  checked={selectedCategories.includes(collection.slug)}
+                  onCheckedChange={() => toggleCategory(collection.slug)}
+                  data-testid={`checkbox-category-${collection.slug}`}
+                />
+                <Label htmlFor={collection.slug} className="text-sm cursor-pointer">
+                  {collection.name} ({products.filter(p => p.category === collection.slug).length})
+                </Label>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       
       <Separator />
@@ -102,6 +119,14 @@ export default function Shop() {
           </Button>
         </>
       )}
+    </div>
+  );
+
+  const ProductSkeleton = () => (
+    <div className="space-y-3">
+      <Skeleton className="aspect-square rounded-md" />
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
     </div>
   );
 
@@ -179,24 +204,39 @@ export default function Shop() {
               </div>
             </div>
 
-            <div className={`grid grid-cols-2 ${gridCols === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 md:gap-6`}>
-              {sortedProducts.map(product => (
-                <ProductCard
-                  key={product.id}
-                  {...product}
-                  onAddToCart={() => addItem({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    salePrice: product.salePrice,
-                    image: product.image
-                  })}
-                  onQuickView={() => setQuickViewProduct(product)}
-                />
-              ))}
-            </div>
+            {productsLoading ? (
+              <div className={`grid grid-cols-2 ${gridCols === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 md:gap-6`}>
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                  <ProductSkeleton key={i} />
+                ))}
+              </div>
+            ) : (
+              <div className={`grid grid-cols-2 ${gridCols === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 md:gap-6`}>
+                {sortedProducts.map(product => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    name={product.name}
+                    price={product.price}
+                    salePrice={product.salePrice ?? undefined}
+                    image={product.image || '/placeholder-product.jpg'}
+                    isNew={product.isNew ?? false}
+                    isBestSeller={product.isBestSeller ?? false}
+                    inStock={product.inStock ?? true}
+                    onAddToCart={() => addItem({
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      salePrice: product.salePrice ?? undefined,
+                      image: product.image || '/placeholder-product.jpg'
+                    })}
+                    onQuickView={() => setQuickViewProduct(product)}
+                  />
+                ))}
+              </div>
+            )}
 
-            {sortedProducts.length === 0 && (
+            {!productsLoading && sortedProducts.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">No products found matching your filters.</p>
                 <Button 

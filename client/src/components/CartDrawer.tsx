@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { formatPrice } from '@/lib/mockData';
+import { formatPrice } from '@/lib/utils';
+import { useLocation } from 'wouter';
 
 export default function CartDrawer() {
+  const [, navigate] = useLocation();
   const { items, isOpen, setIsOpen, updateQuantity, removeItem, subtotal, clearCart } = useCart();
 
   const shipping = subtotal >= 999 ? 0 : 75;
@@ -119,7 +121,10 @@ export default function CartDrawer() {
                 <Button 
                   className="w-full" 
                   size="lg"
-                  onClick={() => console.log('Proceeding to checkout')}
+                  onClick={() => {
+                    setIsOpen(false);
+                    navigate('/checkout');
+                  }}
                   data-testid="button-checkout"
                 >
                   Proceed to Checkout
