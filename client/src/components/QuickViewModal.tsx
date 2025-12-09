@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Minus, Plus, ShoppingBag } from 'lucide-react';
@@ -68,6 +68,9 @@ export default function QuickViewModal({ isOpen, onClose, product }: QuickViewMo
               <DialogTitle className="font-serif text-2xl md:text-3xl" data-testid="text-quick-view-name">
                 {product.name}
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                Quick view of {product.name} - {product.description || 'View product details and add to cart'}
+              </DialogDescription>
             </DialogHeader>
             
             <div className="flex items-center gap-3 mt-4">

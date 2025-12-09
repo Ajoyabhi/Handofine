@@ -13,6 +13,7 @@ interface ProductCardProps {
   isNew?: boolean;
   isBestSeller?: boolean;
   inStock?: boolean;
+  sectionId?: string;
   onAddToCart?: () => void;
   onQuickView?: () => void;
 }
@@ -26,40 +27,42 @@ export default function ProductCard({
   isNew,
   isBestSeller,
   inStock = true,
+  sectionId,
   onAddToCart,
   onQuickView
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const discount = salePrice ? getDiscountPercentage(price, salePrice) : 0;
+  const testIdSuffix = sectionId ? `${sectionId}-${id}` : `${id}`;
 
   return (
     <div 
       className="group relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      data-testid={`card-product-${id}`}
+      data-testid={`card-product-${testIdSuffix}`}
     >
       <div className="relative aspect-[3/4] overflow-hidden rounded-md bg-muted">
         <img 
           src={image} 
           alt={name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          data-testid={`img-product-${id}`}
+          data-testid={`img-product-${testIdSuffix}`}
         />
         
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {isNew && (
-            <Badge variant="default" className="text-xs" data-testid={`badge-new-${id}`}>
+            <Badge variant="default" className="text-xs" data-testid={`badge-new-${testIdSuffix}`}>
               New
             </Badge>
           )}
           {isBestSeller && (
-            <Badge variant="secondary" className="text-xs" data-testid={`badge-bestseller-${id}`}>
+            <Badge variant="secondary" className="text-xs" data-testid={`badge-bestseller-${testIdSuffix}`}>
               Best Seller
             </Badge>
           )}
           {discount > 0 && (
-            <Badge variant="destructive" className="text-xs" data-testid={`badge-sale-${id}`}>
+            <Badge variant="destructive" className="text-xs" data-testid={`badge-sale-${testIdSuffix}`}>
               -{discount}%
             </Badge>
           )}
@@ -86,7 +89,7 @@ export default function ProductCard({
               onAddToCart?.();
               console.log(`Added ${name} to cart`);
             }}
-            data-testid={`button-add-to-cart-${id}`}
+            data-testid={`button-add-to-cart-${testIdSuffix}`}
           >
             <ShoppingBag className="w-4 h-4 mr-2" />
             Add to Cart
@@ -98,7 +101,7 @@ export default function ProductCard({
               onQuickView?.();
               console.log(`Quick view ${name}`);
             }}
-            data-testid={`button-quick-view-${id}`}
+            data-testid={`button-quick-view-${testIdSuffix}`}
           >
             <Eye className="w-4 h-4" />
           </Button>
@@ -115,7 +118,7 @@ export default function ProductCard({
               onAddToCart?.();
               console.log(`Added ${name} to cart`);
             }}
-            data-testid={`button-add-to-cart-mobile-${id}`}
+            data-testid={`button-add-to-cart-mobile-${testIdSuffix}`}
           >
             <ShoppingBag className="w-4 h-4 mr-2" />
             Add
@@ -126,7 +129,7 @@ export default function ProductCard({
       <div className="mt-3">
         <h3 
           className="font-medium text-foreground truncate"
-          data-testid={`text-product-name-${id}`}
+          data-testid={`text-product-name-${testIdSuffix}`}
         >
           {name}
         </h3>
@@ -135,13 +138,13 @@ export default function ProductCard({
             <>
               <span 
                 className="font-semibold text-foreground"
-                data-testid={`text-sale-price-${id}`}
+                data-testid={`text-sale-price-${testIdSuffix}`}
               >
                 {formatPrice(salePrice)}
               </span>
               <span 
                 className="text-sm text-muted-foreground line-through"
-                data-testid={`text-original-price-${id}`}
+                data-testid={`text-original-price-${testIdSuffix}`}
               >
                 {formatPrice(price)}
               </span>
@@ -149,7 +152,7 @@ export default function ProductCard({
           ) : (
             <span 
               className="font-semibold text-foreground"
-              data-testid={`text-price-${id}`}
+              data-testid={`text-price-${testIdSuffix}`}
             >
               {formatPrice(price)}
             </span>

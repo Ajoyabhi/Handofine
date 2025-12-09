@@ -88,6 +88,7 @@ export default function NewArrivals() {
                 isNew={product.isNew ?? false}
                 isBestSeller={product.isBestSeller ?? false}
                 inStock={product.inStock ?? true}
+                sectionId="new-arrivals-page"
                 onAddToCart={() => addItem({
                   id: product.id,
                   name: product.name,

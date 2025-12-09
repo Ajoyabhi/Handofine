@@ -111,6 +111,7 @@ export default function Sale() {
                 isNew={product.isNew ?? false}
                 isBestSeller={product.isBestSeller ?? false}
                 inStock={product.inStock ?? true}
+                sectionId="sale"
                 onAddToCart={() => addItem({
                   id: product.id,
                   name: product.name,

@@ -15,15 +15,16 @@ interface Product {
 interface ProductGridProps {
   products: Product[];
   title?: string;
+  sectionId?: string;
   showViewAll?: boolean;
   onViewAll?: () => void;
 }
 
-export default function ProductGrid({ products, title, showViewAll, onViewAll }: ProductGridProps) {
+export default function ProductGrid({ products, title, sectionId, showViewAll, onViewAll }: ProductGridProps) {
   const { addItem } = useCart();
 
   return (
-    <section className="py-12 md:py-16 lg:py-20" data-testid="product-grid-section">
+    <section className="py-12 md:py-16 lg:py-20" data-testid={`product-grid-section${sectionId ? `-${sectionId}` : ''}`}>
       <div className="max-w-7xl mx-auto px-4">
         {title && (
           <div className="flex items-center justify-between gap-4 mb-8">
@@ -50,6 +51,7 @@ export default function ProductGrid({ products, title, showViewAll, onViewAll }:
             <ProductCard
               key={product.id}
               {...product}
+              sectionId={sectionId}
               onAddToCart={() => addItem({
                 id: product.id,
                 name: product.name,

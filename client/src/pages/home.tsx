@@ -73,6 +73,7 @@ export default function Home() {
           <ProductGrid 
             products={featuredProducts}
             title="Featured Products"
+            sectionId="featured"
             showViewAll
             onViewAll={() => navigate('/shop')}
           />
@@ -115,6 +116,7 @@ export default function Home() {
           <ProductGrid 
             products={newArrivals}
             title="New Arrivals"
+            sectionId="new-arrivals"
             showViewAll
             onViewAll={() => navigate('/new-arrivals')}
           />

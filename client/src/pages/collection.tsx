@@ -162,6 +162,7 @@ export default function Collection() {
                 isNew={product.isNew ?? false}
                 isBestSeller={product.isBestSeller ?? false}
                 inStock={product.inStock ?? true}
+                sectionId={`collection-${slug}`}
                 onAddToCart={() => addItem({
                   id: product.id,
                   name: product.name,

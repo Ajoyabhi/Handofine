@@ -223,6 +223,7 @@ export default function Shop() {
                     isNew={product.isNew ?? false}
                     isBestSeller={product.isBestSeller ?? false}
                     inStock={product.inStock ?? true}
+                    sectionId="shop"
                     onAddToCart={() => addItem({
                       id: product.id,
                       name: product.name,
