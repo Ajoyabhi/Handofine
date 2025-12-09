@@ -1,0 +1,58 @@
+Goal: Build a clean, modern e-commerce site for home decor / scented-candles / gifts / home-essentials — with structure, style, and features just like AuraDecor.co.in.
+Requirements / Features:
+1. Homepage layout & feel
+    * Top bar with social links (e.g. Facebook, Instagram, YouTube, Pinterest), plus a promotional banner (e.g. “Shipping just Rs. 75 for orders up to Rs. 500!”).
+    * Clear main navigation menu with categories like Home, Collections, New Arrivals (or similar).
+    * Hero / promotional banner area showcasing a special offer (e.g. festival sale, new arrivals, seasonal sale) with background image and overlay text.
+    * Carousel / grid of featured products — showing product image, name, price (and “sale” price when applicable).
+    * Sections like “Our Collections”, “Featured Candles / Products / Gift Sets / Home Decor” — with category thumbnails/images linking to each collection page.
+    * Good use of images, clean spacing, a modern “catalog-store” vibe.
+2. Product & Collection Pages
+    * A shop/catalog page that lists products in a clean grid with image, title, price, sale price (if discount), “Add to Cart” or “Shop Now” or “Select Options” buttons.
+    * Collection listing pages (e.g. “Aroma Gift Set”, “Jar & Container Candles”, “Home Decor”, etc.), each showing only products that belong to that collection.
+    * Support for sorting/filtering (optionally) or at least categorization — so visitors can browse by collection / category.
+3. Ecommerce functionality
+    * Add to Cart / Shopping Cart / Checkout flow.
+    * Guest checkout or account-based checkout.
+    * Price & currency display (for your country), currency selector if you plan for multiple countries (AuraDecor shows a country selector).
+    * Product variants/options (if applicable), e.g. different sizes, gift sets, etc.
+    * Sale / discount pricing display.
+    * Basic order management, and backend to manage products, inventory, categories.
+4. Content & Marketing Elements
+    * Promotional banners (e.g. festival sale banners — “Diwali Special Sale”, “New Arrivals”, etc.).
+    * Ability to embed videos or lifestyle content (for example, short promo or “inside the workshop” video). AuraDecor shows some video + media sections.
+    * Social media integration — social icons, links, maybe social sharing for products.
+    * Privacy-policy / Terms / Footer pages (for trust + compliance).
+    * Optionally multi-language or multi-region / currency support if you plan to ship internationally (since AuraDecor shows a country/currency selector).
+5. Design & Responsiveness
+    * Responsive design: site should work well on desktop, mobile, tablet.
+    * Clean, modern styling, good spacing, image-rich, minimal clutter.
+    * SEO-friendly structure (semantic HTML, clean URLs, meta tags, alt attributes for images).
+    * Fast loading times, optimized images.
+6. Scalability and Manageability
+    * Use a CMS or e-commerce platform (WordPress + WooCommerce, Shopify, Webflow + e-commerce, etc.) so you (or your admin) can easily add / edit products, collections, banners, content — without full code change.
+    * Backend should let you manage products, categories, discounts/sales, orders, shipping, tax, etc.
+    * If possible, support multi-region / currency / country selection (if you expect international customers).
+7. Optional / Nice-to-Have Features
+    * “New Arrivals” and “Best Sellers” sections.
+    * Promotional banners for festivals / special offers (e.g. Diwali, seasonal sales).
+    * Visual storytelling / lifestyle content (videos / images showing process / mood / ambience) to build brand vibe.
+    * Wishlist or “Save for later” (but can be added later).
+    * Basic analytics / tracking (page views, conversions).
+    * Proper metadata / SEO + Open Graph for social sharing.
+Deliverables:
+* Fully functional home-page, collections pages, product pages, cart & checkout flow.
+* Admin backend / CMS to manage products, categories, banners.
+* Responsive layout working well on desktop & mobile.
+* Documentation / instructions on how to add products, collections, banners, manage orders.
+* Optionally, multi-region / currency support (if required).
+User Experience (UX) & Visual Vibe Requirements:
+* A simple, elegant, image-first aesthetic focusing on home ambiance, calmness, lifestyle & decor.
+* Smooth navigation: clearly visible menu, clean grids, nice typography, good whitespace.
+* Emphasis on “home décor / lifestyle / gift / candles” mood; product images should look premium.
+* Easy for a visitor to browse category → view products → add to cart → checkout without friction.
+Example flows:
+* Homepage → click on “Collections” → choose “Jar & Container Candles” → see grid of those products → click one → view product details → add to cart → checkout.
+* Homepage → seasonal banner (e.g. Diwali) → click → see festival-special products / gift sets.
+* Admin side: add a new product + images + assign to collection + set price / sale price + publish.
+Important: replicate not only functionality, but also visual feel, user flow and organisational structure of AuraDecor site, while using maintainable tech and good UX practices.
