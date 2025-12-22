@@ -41,7 +41,7 @@ async function seed() {
       name: "Seasonal",
       slug: "seasonal",
       description: "Limited edition seasonal fragrances for every time of year",
-      image: imagePath("seasonal_collection.png"),
+      image: imagePath("seasonal_autumn_collection.png"),
       productCount: 0,
     },
     {
@@ -55,7 +55,7 @@ async function seed() {
       name: "Luxury Collection",
       slug: "luxury-collection",
       description: "Premium handcrafted candles with exotic fragrances",
-      image: imagePath("luxury_collection.png"),
+      image: imagePath("luxury_premium_collection.png"),
       productCount: 0,
     },
   ];
