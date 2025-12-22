@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
 import { SiFacebook, SiInstagram, SiYoutube, SiPinterest } from 'react-icons/si';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -11,10 +12,32 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           <div className="col-span-2 md:col-span-1">
-            <h3 className="font-serif text-2xl font-semibold mb-4">AuraHome</h3>
-            <p className="text-muted-foreground text-sm mb-6">
+            <h3 className="font-serif text-2xl font-semibold mb-4">HandOFine</h3>
+            <p className="text-muted-foreground text-sm mb-4">
               Premium scented candles and home decor to transform your living space into a sanctuary of warmth and comfort.
             </p>
+            <div className="space-y-2 mb-4">
+              <a 
+                href="tel:+918867692183" 
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                data-testid="link-footer-phone"
+              >
+                <Phone className="w-4 h-4" />
+                +91 8867692183
+              </a>
+              <a 
+                href="mailto:info@handofinegifts.com" 
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                data-testid="link-footer-email"
+              >
+                <Mail className="w-4 h-4" />
+                info@handofinegifts.com
+              </a>
+              <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+                <span>First Floor, 222 Old No.87 Basement, Village Neb Sarai, New Delhi, South Delhi, Delhi, 110068</span>
+              </div>
+            </div>
             <div className="flex items-center gap-3">
               <a 
                 href="https://facebook.com" 
@@ -120,7 +143,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground" data-testid="text-copyright">
-            2024 AuraHome. All rights reserved.
+            2024 HandOFine. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-4">
             {footerLinks.policies.map(link => (

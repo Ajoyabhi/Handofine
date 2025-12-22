@@ -50,7 +50,7 @@ export default function Header() {
 
           <Link href="/">
             <h1 className="font-serif text-2xl md:text-3xl font-semibold tracking-tight cursor-pointer" data-testid="link-logo">
-              AuraHome
+              HandOFine
             </h1>
           </Link>
 

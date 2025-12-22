@@ -1,8 +1,13 @@
-# AuraHome - Premium Home Decor E-Commerce Platform
+# HandOFine - Premium Home Decor E-Commerce Platform
 
 ## Overview
 
-AuraHome is a full-stack e-commerce platform for premium home decor, scented candles, and gift products. The application follows a modern React + Express architecture with PostgreSQL database storage, designed to deliver a premium shopping experience with features like product browsing, collections, shopping cart, checkout, and an admin dashboard for content management.
+HandOFine is a full-stack e-commerce platform for premium home decor, scented candles, and gift products. The application follows a modern React + Express architecture with PostgreSQL database storage, designed to deliver a premium shopping experience with features like product browsing, collections, shopping cart, checkout, and an admin dashboard for content management.
+
+## Contact Information
+- Phone: +91 8867692183
+- Email: info@handofinegifts.com
+- Address: First Floor, 222 Old No.87 Basement, Village Neb Sarai, New Delhi, South Delhi, Delhi, 110068
 
 ## User Preferences
 
@@ -32,7 +37,7 @@ Preferred communication style: Simple, everyday language.
 - **Key Entities**: Users, Products, Collections, CartItems, Orders, OrderItems, Banners
 
 ### Design System
-- Premium home decor aesthetic inspired by AuraDecor.co.in
+- Premium home decor aesthetic for HandOFine Gifts
 - Typography: Playfair Display (serif headers), DM Sans (body text)
 - Color system using CSS custom properties with light/dark mode support
 - Image-first design with generous whitespace
