@@ -1,3 +1,4 @@
+import "./env"; // Load environment variables first
 import { db } from "./db";
 import { collections, products, banners } from "@shared/schema";
 import { sql } from "drizzle-orm";

@@ -1,3 +1,4 @@
+import "./env"; // Load environment variables first
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -88,15 +89,37 @@ app.use('/assets', express.static(path.resolve(import.meta.dirname, '..', 'attac
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`serving on port ${port}`);
-    },
-  );
+  const port = parseInt(process.env.PORT || "5001", 10);
+  const host = process.env.HOST || "0.0.0.0";
+  
+  // Handle server errors gracefully
+  httpServer.on("error", (err: NodeJS.ErrnoException) => {
+    if (err.code === "EADDRINUSE") {
+      log(`Port ${port} is already in use.`, "error");
+      console.error(`\n❌ Error: Port ${port} is already in use.`);
+      console.error(`\nTo fix this, you can:`);
+      console.error(`  1. Stop the process using port ${port}:`);
+      if (process.platform === "darwin" || process.platform === "linux") {
+        console.error(`     lsof -ti:${port} | xargs kill -9`);
+        console.error(`     or: kill -9 $(lsof -ti:${port})`);
+      } else {
+        console.error(`     netstat -ano | findstr :${port}`);
+        console.error(`     taskkill /PID <PID> /F`);
+      }
+      console.error(`  2. Use a different port by setting PORT environment variable:`);
+      console.error(`     PORT=5001 npm run dev`);
+      process.exit(1);
+    } else {
+      log(`Server error: ${err.message}`, "error");
+      console.error(`\n❌ Server error:`, err);
+      process.exit(1);
+    }
+  });
+  
+  // Cross-platform server listening
+  // Using standard listen() method that works on all platforms (macOS, Linux, Windows)
+  // reusePort is Linux-specific and not needed for most use cases
+  httpServer.listen(port, host, () => {
+    log(`serving on ${host}:${port}`);
+  });
 })();
