@@ -6,17 +6,17 @@ const USERNAME = 'victorium';
 const PASSWORD = 'victorium@2026';
 
 // Set target total amount for EACH account
-const TARGET_PER_ACCOUNT = 600000; // 5 Lakh per account
+const TARGET_PER_ACCOUNT = 150000; // 50k per account
 const MIN_PAYOUT = 25000;
 const MAX_PAYOUT = 35000;
 
 // Accounts list
 const payoutAccounts = [
     {
-        "account_number": "50200075169897",
-        "account_ifsc": "HDFC0004217",
+        "account_number": "4512279701",
+        "account_ifsc": "KKBK0005028",
         "requesttype": "IMPS",
-        "bankname": "HDFC Bank"
+        "bankname": "KOTAK Bank"
     }
 ];
 
