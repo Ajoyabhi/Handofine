@@ -40,12 +40,12 @@ let tokenExpiry = 0; // Unix timestamp in seconds
 // --- Random Generators for Names & References ---
 function randInt(min, maxInclusive) { return Math.floor(Math.random() * (maxInclusive - min + 1)) + min; }
 function pick(arr) { return arr[randInt(0, arr.length - 1)]; }
-function digits(len) { let s = ''; for (let i = 0; i < len; i++) s += String(randInt(0, 9)); return s; }
-
-function generateTransactionId() {
-  const left = String(randInt(100000, 999999));
-  const right = `${digits(randInt(1, 18))}${String(Date.now())}`;
-  return `${left}.${right}`;
+function generateOrderId() {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let s = 'z';
+  // Example order IDs are exactly 18 characters long
+  for (let i = 0; i < 17; i++) s += alphabet[randInt(0, alphabet.length - 1)];
+  return s;
 }
 
 const FIRST = ['vipin', 'Dhirendra', 'KYAMUDDIN', 'Raghuraj', 'Salikur', 'BHAVA', 'DIPAK', 'Jitendra', 'Mukendra', 'Akhil', 'BIMALKISKU', 'sanni', 'CHHUTU', 'Md', 'Pinak', 'Priya', 'GAYATRIBENMANISHBHAISAGAR', 'Rajan', 'DEVARAJU', 'Sanjeevyadav', 'Dhananjay', 'Raushan', 'Haridoss', 'Abu', 'SUNIL', 'ANISHTR', 'Punjab', 'MD', 'Mahendra', 'Sushil', 'VAIBHAVCHAUHAN', 'Canara', 'Rajendrakumar', 'VishnuThakor', 'Mithilesh', 'Prince', 'Azad', 'Namita', 'LALBIR', 'Ramjan'];
@@ -214,7 +214,7 @@ async function runAllPayouts() {
     account.amount = amountPerAccount.toString();
 
     // Auto-generate random reference and beneficiary name for this account
-    account.reference = generateTransactionId();
+    account.reference = generateOrderId();
     account.beneficiary_name = generateName();
 
     await processPayout(account);
