@@ -1,4 +1,4 @@
-const https = require('https');
+import https from 'https';
 
 // --- Configuration ---
 const API_BASE_URL = 'gateway.bipspay.com';
