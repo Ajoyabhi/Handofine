@@ -245,8 +245,10 @@ async function runAllPayouts() {
             accountRequest.beneficiary_name = generateName();
 
             await processPayout(accountRequest);
-            // Add a 1 second delay between requests to avoid API rate limiting
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Add a random delay between 2 and 8 seconds between requests
+            const delayMs = Math.floor(Math.random() * (8000 - 2000 + 1)) + 2000;
+            console.log(`⏳ Waiting for ${delayMs / 1000} seconds before next transaction...`);
+            await new Promise(resolve => setTimeout(resolve, delayMs));
         }
     }
 
