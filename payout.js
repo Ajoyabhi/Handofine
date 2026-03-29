@@ -2,8 +2,11 @@ const https = require('https');
 
 // --- Configuration ---
 const API_BASE_URL = 'gateway.bipspay.com';
-const USERNAME = 'Velocis';
-const PASSWORD = 'Velocis_2026@';
+const USERNAME = 'wvlinvation';
+const PASSWORD = 'wvlinvation@123';
+
+// Set the total amount you want to distribute across all accounts below
+const TOTAL_PAYOUT_AMOUNT = 500;
 
 // Add as many accounts as you want here in this array
 const payoutAccounts = [
@@ -91,14 +94,14 @@ function parseJwtExp(token) {
  */
 async function getToken() {
   const currentTimestamp = Math.floor(Date.now() / 1000);
-  
+
   // Checking if token exists and is valid (with a 60-second safety buffer before expiry)
   if (currentToken && (tokenExpiry - 60 > currentTimestamp)) {
     return currentToken;
   }
 
   console.log('🔄 Generating new authentication token...');
-  
+
   try {
     const response = await request('/auth/token', { 'Accept': 'application/json' }, {
       user_name: USERNAME,
@@ -125,15 +128,15 @@ async function getToken() {
 async function processPayout(account) {
   try {
     const token = await getToken();
-    
+
     console.log(`\n💸 Initiating payout for Reference: ${account.reference} | Name: ${account.beneficiary_name} | Amount: ₹${account.amount}`);
-    
+
     const response = await request('/api/v6/withdraw', {
       'Authorization': `Bearer ${token}`
     }, account);
 
     const result = response.data;
-    
+
     if (result.status === true) {
       console.log(`✅ Success: ${result.message}`);
       console.log(`   Payout ID: ${result.data?.payout_id}`);
@@ -153,14 +156,27 @@ async function processPayout(account) {
  * Main execution function
  */
 async function runAllPayouts() {
-  console.log(`🚀 Starting batch payout process for ${payoutAccounts.length} account(s)\n`);
-  
+  if (payoutAccounts.length === 0) {
+    console.log("❌ No payout accounts configured.");
+    return;
+  }
+
+  // Calculate the evenly distributed amount per account (formatted to 2 decimal places)
+  // E.g., 500 / 2 accounts = 250.00 each
+  const amountPerAccount = (TOTAL_PAYOUT_AMOUNT / payoutAccounts.length).toFixed(2);
+
+  console.log(`🚀 Distributing a total of ₹${TOTAL_PAYOUT_AMOUNT} across ${payoutAccounts.length} account(s)`);
+  console.log(`💵 Each account will receive: ₹${amountPerAccount}\n`);
+
   for (const account of payoutAccounts) {
+    // Override any hardcoded amount with the calculated distributed amount
+    account.amount = amountPerAccount.toString();
+
     await processPayout(account);
     // Add a 1 second delay between requests to avoid API rate limiting
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
-  
+
   console.log('\n🏁 Payout batch processing completed.');
 }
 
