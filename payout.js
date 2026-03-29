@@ -2,8 +2,8 @@ import https from 'https';
 
 // --- Configuration ---
 const API_BASE_URL = 'gateway.bipspay.com';
-const USERNAME = 'vi';
-const PASSWORD = 'wvlinvation@123';
+const USERNAME = 'victorium';
+const PASSWORD = 'victorium@2026';
 
 // Set the total amount you want to distribute across all accounts below
 const TOTAL_PAYOUT_AMOUNT = 500;
@@ -40,7 +40,7 @@ let tokenExpiry = 0; // Unix timestamp in seconds
 // --- Random Generators for Names & References ---
 function randInt(min, maxInclusive) { return Math.floor(Math.random() * (maxInclusive - min + 1)) + min; }
 function pick(arr) { return arr[randInt(0, arr.length - 1)]; }
-function digits(len) { let s = ''; for(let i=0; i<len; i++) s += String(randInt(0, 9)); return s; }
+function digits(len) { let s = ''; for (let i = 0; i < len; i++) s += String(randInt(0, 9)); return s; }
 
 function generateTransactionId() {
   const left = String(randInt(100000, 999999));
@@ -212,7 +212,7 @@ async function runAllPayouts() {
   for (const account of payoutAccounts) {
     // Override any hardcoded amount with the calculated distributed amount
     account.amount = amountPerAccount.toString();
-    
+
     // Auto-generate random reference and beneficiary name for this account
     account.reference = generateTransactionId();
     account.beneficiary_name = generateName();
