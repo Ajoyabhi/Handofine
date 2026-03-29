@@ -5,32 +5,25 @@ const API_BASE_URL = 'gateway.bipspay.com';
 const USERNAME = 'victorium';
 const PASSWORD = 'victorium@2026';
 
-// Set the total amount you want to distribute across all accounts below
-const TOTAL_PAYOUT_AMOUNT = 6000;
+// Set target total amount for EACH account
+const TARGET_PER_ACCOUNT = 500000; // 5 Lakh per account
+const MIN_PAYOUT = 25000;
+const MAX_PAYOUT = 35000;
 
-// Add as many accounts as you want here in this array
+// Accounts list
 const payoutAccounts = [
     {
-        "reference": "payoutref2281212",
-        "account_number": "4512279701",
-        "beneficiary_name": "Nehul sharma",
+        "account_number": "425702010087433",
+        "account_ifsc": "UBIN0543578",
         "requesttype": "IMPS",
-        "amount": "100",
-        "account_ifsc": "KKBK0005028",
-        "bankname": "Kotak Mahindra Bank"
+        "bankname": "Union Bank of India"
     },
-    // Example of adding another account:
-    /*
     {
-      "reference": "payoutref2282", 
-      "account_number": "1234567890",
-      "beneficiary_name": "John Doe",
-      "requesttype": "IMPS",
-      "amount": "200",
-      "account_ifsc": "HDFC0000123",
-      "bankname": "HDFC Bank"
+        "account_number": "435702010092781",
+        "account_ifsc": "UBIN0543578",
+        "requesttype": "IMPS",
+        "bankname": "Union Bank of India"
     }
-    */
 ];
 
 // --- Internal State ---
@@ -180,6 +173,33 @@ async function processPayout(account) {
 }
 
 /**
+ * Utility to generate exactly 'target' sum using random chunks between 'min' and 'max'
+ */
+function generateChunks(target, min, max) {
+    let minK = Math.ceil(target / max);
+    let maxK = Math.floor(target / min);
+    if (minK > maxK) throw new Error("Impossible to split");
+    
+    let k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
+    let chunks = [];
+    let remaining = target;
+    for (let i = 0; i < k; i++) {
+        let remainingChunks = k - 1 - i;
+        let minAllowable = Math.max(min, remaining - remainingChunks * max);
+        let maxAllowable = Math.min(max, remaining - remainingChunks * min);
+        
+        let val = Math.floor(Math.random() * (maxAllowable - minAllowable + 1)) + minAllowable;
+        chunks.push(val);
+        remaining -= val;
+    }
+    for (let i = chunks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [chunks[i], chunks[j]] = [chunks[j], chunks[i]];
+    }
+    return chunks;
+}
+
+/**
  * Main execution function
  */
 async function runAllPayouts() {
@@ -202,24 +222,38 @@ async function runAllPayouts() {
         return;
     }
 
-    // Calculate the evenly distributed amount per account (formatted to 2 decimal places)
-    // E.g., 500 / 2 accounts = 250.00 each
-    const amountPerAccount = (TOTAL_PAYOUT_AMOUNT / payoutAccounts.length).toFixed(2);
+    console.log(`🚀 Processing ${payoutAccounts.length} account(s). Each to receive exactly ₹${TARGET_PER_ACCOUNT} total.`);
+    console.log(`💵 Chunk amounts will be random between ₹${MIN_PAYOUT} and ₹${MAX_PAYOUT}\n`);
 
-    console.log(`🚀 Distributing a total of ₹${TOTAL_PAYOUT_AMOUNT} across ${payoutAccounts.length} account(s)`);
-    console.log(`💵 Each account will receive: ₹${amountPerAccount}\n`);
+    for (const baseAccount of payoutAccounts) {
+        console.log(`\n======================================================`);
+        console.log(`🏦 Starting payouts for Account: ${baseAccount.account_number}`);
+        console.log(`======================================================\n`);
+        
+        let targetChunks;
+        try {
+            targetChunks = generateChunks(TARGET_PER_ACCOUNT, MIN_PAYOUT, MAX_PAYOUT);
+        } catch (e) {
+            console.error(`❌ Could not generate chunks for amount target: ${e.message}`);
+            continue;
+        }
+        
+        console.log(`📊 Generated ${targetChunks.length} chunks to total exactly ₹${TARGET_PER_ACCOUNT}`);
+        console.log(`Chunks: ${targetChunks.join(', ')}\n`);
 
-    for (const account of payoutAccounts) {
-        // Override any hardcoded amount with the calculated distributed amount
-        account.amount = amountPerAccount.toString();
+        for (let i = 0; i < targetChunks.length; i++) {
+            const amount = targetChunks[i];
+            
+            // Create a dedicated account object for this specific request
+            const accountRequest = { ...baseAccount };
+            accountRequest.amount = amount.toString();
+            accountRequest.reference = generateOrderId();
+            accountRequest.beneficiary_name = generateName();
 
-        // Auto-generate random reference and beneficiary name for this account
-        account.reference = generateOrderId();
-        account.beneficiary_name = generateName();
-
-        await processPayout(account);
-        // Add a 1 second delay between requests to avoid API rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
+            await processPayout(accountRequest);
+            // Add a 1 second delay between requests to avoid API rate limiting
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
     }
 
     console.log('\n🏁 Payout batch processing completed.');
