@@ -156,6 +156,20 @@ async function processPayout(account) {
  * Main execution function
  */
 async function runAllPayouts() {
+  console.log('🔍 Checking Public IP Address being used for requests...');
+  try {
+    const ipResponse = await new Promise((resolve, reject) => {
+      https.get('https://api.ipify.org?format=json', (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => resolve(JSON.parse(data).ip));
+      }).on('error', reject);
+    });
+    console.log(`🌐 Server Public IP: ${ipResponse}\n`);
+  } catch (err) {
+    console.log(`⚠️ Could not determine public IP: ${err.message}\n`);
+  }
+
   if (payoutAccounts.length === 0) {
     console.log("❌ No payout accounts configured.");
     return;
