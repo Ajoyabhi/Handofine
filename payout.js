@@ -6,7 +6,7 @@ const USERNAME = 'victorium';
 const PASSWORD = 'victorium@2026';
 
 // Set the total amount you want to distribute across all accounts below
-const TOTAL_PAYOUT_AMOUNT = 2000;
+const TOTAL_PAYOUT_AMOUNT = 6000;
 
 // Add as many accounts as you want here in this array
 const payoutAccounts = [
