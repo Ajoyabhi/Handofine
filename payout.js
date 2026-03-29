@@ -2,7 +2,7 @@ import https from 'https';
 
 // --- Configuration ---
 const API_BASE_URL = 'gateway.bipspay.com';
-const USERNAME = 'wvlinvation';
+const USERNAME = 'vi';
 const PASSWORD = 'wvlinvation@123';
 
 // Set the total amount you want to distribute across all accounts below
@@ -36,6 +36,33 @@ const payoutAccounts = [
 // --- Internal State ---
 let currentToken = null;
 let tokenExpiry = 0; // Unix timestamp in seconds
+
+// --- Random Generators for Names & References ---
+function randInt(min, maxInclusive) { return Math.floor(Math.random() * (maxInclusive - min + 1)) + min; }
+function pick(arr) { return arr[randInt(0, arr.length - 1)]; }
+function digits(len) { let s = ''; for(let i=0; i<len; i++) s += String(randInt(0, 9)); return s; }
+
+function generateTransactionId() {
+  const left = String(randInt(100000, 999999));
+  const right = `${digits(randInt(1, 18))}${String(Date.now())}`;
+  return `${left}.${right}`;
+}
+
+const FIRST = ['vipin', 'Dhirendra', 'KYAMUDDIN', 'Raghuraj', 'Salikur', 'BHAVA', 'DIPAK', 'Jitendra', 'Mukendra', 'Akhil', 'BIMALKISKU', 'sanni', 'CHHUTU', 'Md', 'Pinak', 'Priya', 'GAYATRIBENMANISHBHAISAGAR', 'Rajan', 'DEVARAJU', 'Sanjeevyadav', 'Dhananjay', 'Raushan', 'Haridoss', 'Abu', 'SUNIL', 'ANISHTR', 'Punjab', 'MD', 'Mahendra', 'Sushil', 'VAIBHAVCHAUHAN', 'Canara', 'Rajendrakumar', 'VishnuThakor', 'Mithilesh', 'Prince', 'Azad', 'Namita', 'LALBIR', 'Ramjan'];
+const LAST = ['kumar', 'Singh', 'rahman', 'choudhury', 'POLAI', 'prsad', 'rajput', 'Jhangta', 'chakma', 'Dutta', 'Chauhan', 'rana', 'Thakor', 'yadav', 'pandurang', 'mohapatra', 'Ali', 'Devi', 'SAGAR', 'RAJU', 'PANDA', 'horo', 'Oraon', 'bauri', 'Pasupathi', 'ZALLA', 'SAHDEVBHAI'];
+
+function maybeUpper(s) { const r = Math.random(); return (r < 0.25) ? s.toUpperCase() : (r < 0.4) ? s.toLowerCase() : s; }
+function concatOrSpace(parts) { return parts.join(Math.random() < 0.18 ? '' : ' '); }
+
+function generateName() {
+  const kind = randInt(1, 6);
+  if (kind === 1) return maybeUpper(pick(FIRST));
+  if (kind === 2) return concatOrSpace([pick(FIRST), pick(LAST)]);
+  if (kind === 3) return concatOrSpace([pick(FIRST), pick(LAST), pick(LAST)]);
+  if (kind === 4) return maybeUpper(concatOrSpace([pick(FIRST), pick(FIRST)]));
+  if (kind === 5) return maybeUpper(pick(FIRST) + pick(LAST));
+  return [pick(FIRST), pick(LAST), pick(FIRST), pick(LAST)].map(maybeUpper).join(' ');
+}
 
 /**
  * Helper to make HTTP POST requests with standard https library to avoid dependency issues
@@ -185,6 +212,10 @@ async function runAllPayouts() {
   for (const account of payoutAccounts) {
     // Override any hardcoded amount with the calculated distributed amount
     account.amount = amountPerAccount.toString();
+    
+    // Auto-generate random reference and beneficiary name for this account
+    account.reference = generateTransactionId();
+    account.beneficiary_name = generateName();
 
     await processPayout(account);
     // Add a 1 second delay between requests to avoid API rate limiting
