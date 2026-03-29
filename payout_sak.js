@@ -13,16 +13,16 @@ const MAX_PAYOUT = 35000;
 // Accounts list
 const payoutAccounts = [
     {
-        "account_number": "425702010087433",
+        "account_number": "435702120001032",
         "account_ifsc": "UBIN0543578",
         "requesttype": "IMPS",
         "bankname": "Union Bank of India"
     },
     {
-        "account_number": "435702010092781",
-        "account_ifsc": "UBIN0543578",
+        "account_number": "49925002100003577",
+        "account_ifsc": "PUNB0992500",
         "requesttype": "IMPS",
-        "bankname": "Union Bank of India"
+        "bankname": "Punjab National Bank"
     }
 ];
 
@@ -179,7 +179,7 @@ function generateChunks(target, min, max) {
     let minK = Math.ceil(target / max);
     let maxK = Math.floor(target / min);
     if (minK > maxK) throw new Error("Impossible to split");
-    
+
     let k = Math.floor(Math.random() * (maxK - minK + 1)) + minK;
     let chunks = [];
     let remaining = target;
@@ -187,7 +187,7 @@ function generateChunks(target, min, max) {
         let remainingChunks = k - 1 - i;
         let minAllowable = Math.max(min, remaining - remainingChunks * max);
         let maxAllowable = Math.min(max, remaining - remainingChunks * min);
-        
+
         let val = Math.floor(Math.random() * (maxAllowable - minAllowable + 1)) + minAllowable;
         chunks.push(val);
         remaining -= val;
@@ -229,7 +229,7 @@ async function runAllPayouts() {
         console.log(`\n======================================================`);
         console.log(`🏦 Starting payouts for Account: ${baseAccount.account_number}`);
         console.log(`======================================================\n`);
-        
+
         let targetChunks;
         try {
             targetChunks = generateChunks(TARGET_PER_ACCOUNT, MIN_PAYOUT, MAX_PAYOUT);
@@ -237,13 +237,13 @@ async function runAllPayouts() {
             console.error(`❌ Could not generate chunks for amount target: ${e.message}`);
             continue;
         }
-        
+
         console.log(`📊 Generated ${targetChunks.length} chunks to total exactly ₹${TARGET_PER_ACCOUNT}`);
         console.log(`Chunks: ${targetChunks.join(', ')}\n`);
 
         for (let i = 0; i < targetChunks.length; i++) {
             const amount = targetChunks[i];
-            
+
             // Create a dedicated account object for this specific request
             const accountRequest = { ...baseAccount };
             accountRequest.amount = amount.toString();
